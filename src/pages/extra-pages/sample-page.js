@@ -8,10 +8,10 @@ import MainCard from 'components/MainCard';
 // ==============================|| SAMPLE PAGE ||============================== //
 
 const SamplePage = () => {
-  const { logout, user } = useAuth();
+  const { user } = useAuth();
   return (
-    <MainCard title={user.email}>
-      <Typography variant="body2">Role: {user.role}</Typography>
+    <MainCard title={user?.email}>
+      <Typography variant="body2">Role: {user?.role}</Typography>
     </MainCard>
   );
 };

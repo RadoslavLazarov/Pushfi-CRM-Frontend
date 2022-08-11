@@ -141,10 +141,10 @@ const Profile = () => {
                             <Stack>
                               <Typography variant="h6">{user?.name}</Typography>
                               <Typography variant="body2" color="textSecondary">
-                                {user.email}
+                                {user?.email}
                               </Typography>
                               <Typography variant="body2" color="textSecondary">
-                                {user.role}
+                                {user?.role}
                               </Typography>
                             </Stack>
                           </Stack>
