@@ -3,9 +3,11 @@ import PropTypes from 'prop-types';
 // material-ui
 import { styled, useTheme } from '@mui/material/styles';
 import MuiAvatar from '@mui/material/Avatar';
+import { Box } from '@mui/material';
 
 // project import
 import getColors from 'utils/getColors';
+import useAuth from 'hooks/useAuth';
 
 // ==============================|| AVATAR - COLOR STYLE ||============================== //
 
@@ -107,6 +109,54 @@ export default function Avatar({ variant = 'circular', children, color = 'primar
     <AvatarStyle variant={variant} theme={theme} color={color} type={type} size={size} {...others}>
       {children}
     </AvatarStyle>
+  );
+}
+
+export function AvatarCustom({ avatarColor, fullName, size }) {
+  const { user } = useAuth();
+  let names;
+  let color;
+  let adminFirstLetter;
+
+  if (fullName) {
+    names = fullName.split(' ');
+  } else if (user?.fullName) {
+    names = user.fullName.split(' ');
+  } else {
+    adminFirstLetter = 'A';
+  }
+
+  if (avatarColor) {
+    color = avatarColor;
+  } else {
+    color = user?.avatarColor;
+  }
+
+  let firstNameLetter;
+  let lastNameLetter;
+
+  if (names?.length) {
+    firstNameLetter = names[0].split('')[0].toUpperCase();
+    lastNameLetter = names[1].split('')[0].toUpperCase();
+  }
+
+  return (
+    <Box
+      sx={{
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'center',
+        height: `${size}px`,
+        width: `${size}px`,
+        bgcolor: color,
+        color: '#fff',
+        borderRadius: '50%',
+        fontWeight: 700,
+        fontSize: 10
+      }}
+    >
+      {adminFirstLetter ? adminFirstLetter : firstNameLetter + lastNameLetter}
+    </Box>
   );
 }
 

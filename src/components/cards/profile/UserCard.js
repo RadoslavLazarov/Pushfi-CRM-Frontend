@@ -78,7 +78,7 @@ const UserCard = ({ user }) => {
                   primary={<Typography variant="subtitle1">{user.fatherName}</Typography>}
                   secondary={
                     <Typography variant="caption" color="secondary">
-                      {user.role}
+                      {user.roleName}
                     </Typography>
                   }
                 />

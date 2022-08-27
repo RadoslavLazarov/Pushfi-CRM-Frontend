@@ -12,18 +12,9 @@ import authReducer from 'store/reducers/auth';
 // project import
 import Loader from 'components/Loader';
 import axios from 'axios';
+import baseUrl from 'utils/getBaseUrl';
 
 const chance = new Chance();
-
-let baseUrl;
-
-if (!process.env.NODE_ENV || process.env.NODE_ENV === 'development') {
-  // dev code
-  baseUrl = 'https://localhost:44375';
-} else {
-  // production code
-  baseUrl = 'https://pushfi-api.azurewebsites.net';
-}
 
 // constant
 const initialState = {
@@ -72,7 +63,15 @@ export const JWTProvider = ({ children }) => {
         if (serviceToken && verifyToken(serviceToken)) {
           setSession(serviceToken);
           const response = await axios.get(`${baseUrl}/api/Authentication/Me`);
-          const { user } = response.data;
+          const user = {
+            id: response.data.id,
+            email: response.data.email,
+            roleType: response.data.roleType,
+            roleName: response.data.roleName,
+            fullName: response.data.fullName,
+            avatarColor: response.data.avatarColor
+          };
+
           dispatch({
             type: LOGIN,
             payload: {
@@ -91,7 +90,10 @@ export const JWTProvider = ({ children }) => {
             const user = {
               id: response.data.id,
               email: response.data.email,
-              role: response.data.role
+              roleType: response.data.roleType,
+              roleName: response.data.roleName,
+              fullName: response.data.fullName,
+              avatarColor: response.data.avatarColor
             };
 
             setSession(serviceToken, refreshToken);
@@ -132,7 +134,10 @@ export const JWTProvider = ({ children }) => {
     const user = {
       id: response.data.id,
       email: response.data.email,
-      role: response.data.role
+      roleType: response.data.roleType,
+      roleName: response.data.roleName,
+      fullName: response.data.fullName,
+      avatarColor: response.data.avatarColor
     };
     console.log(response);
     setSession(serviceToken, refreshToken);

@@ -11,7 +11,8 @@ import {
   MenuUnfoldOutlined,
   QuestionOutlined,
   SmileOutlined,
-  StopOutlined
+  StopOutlined,
+  UserOutlined
 } from '@ant-design/icons';
 
 // icons
@@ -24,7 +25,8 @@ const icons = {
   SmileOutlined,
   GatewayOutlined,
   QuestionOutlined,
-  DeploymentUnitOutlined
+  DeploymentUnitOutlined,
+  UserOutlined
 };
 
 // ==============================|| MENU ITEMS - SUPPORT ||============================== //
@@ -35,20 +37,28 @@ const other = {
   type: 'group',
   children: [
     {
-      id: 'sample-page',
-      title: <FormattedMessage id="sample-page" />,
+      id: 'dashboard',
+      title: <FormattedMessage id="dashboard" />,
       type: 'item',
-      url: '/sample-page',
+      url: '/dashboard',
       icon: icons.ChromeOutlined
     },
     {
-      id: 'disabled-menu',
-      title: <FormattedMessage id="disabled-menu" />,
+      id: 'customers',
+      title: <FormattedMessage id="customers" />,
       type: 'item',
-      url: '#',
-      icon: icons.StopOutlined,
-      disabled: true
+      url: '/customers',
+      icon: icons.UserOutlined,
+      roles: ['Admin', 'Broker']
     }
+    // {
+    //   id: 'disabled-menu',
+    //   title: <FormattedMessage id="disabled-menu" />,
+    //   type: 'item',
+    //   url: '#',
+    //   icon: icons.StopOutlined,
+    //   disabled: true
+    // }
     // {
     //   id: 'documentation',
     //   title: <FormattedMessage id="documentation" />,

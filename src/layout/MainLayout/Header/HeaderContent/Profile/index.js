@@ -13,6 +13,7 @@ import IconButton from 'components/@extended/IconButton';
 import useAuth from 'hooks/useAuth';
 import ProfileTab from './ProfileTab';
 import SettingTab from './SettingTab';
+import { AvatarCustom } from 'components/@extended/Avatar';
 
 // assets
 import avatar1 from 'assets/images/users/avatar-1.png';
@@ -95,7 +96,7 @@ const Profile = () => {
         onClick={handleToggle}
       >
         <Stack direction="row" spacing={2} alignItems="center" sx={{ p: 0.5 }}>
-          <Avatar alt="profile user" src={avatar1} size="xs" />
+          <AvatarCustom size={24} />
           <Typography variant="subtitle1">{user?.name}</Typography>
         </Stack>
       </ButtonBase>
@@ -137,14 +138,15 @@ const Profile = () => {
                       <Grid container justifyContent="space-between" alignItems="center">
                         <Grid item>
                           <Stack direction="row" spacing={1.25} alignItems="center">
-                            <Avatar alt="profile user" src={avatar1} sx={{ width: 32, height: 32 }} />
+                            {/* <Avatar alt="profile user" src={avatar1} sx={{ width: 32, height: 32 }} /> */}
+                            <AvatarCustom size={32} />
                             <Stack>
                               <Typography variant="h6">{user?.name}</Typography>
                               <Typography variant="body2" color="textSecondary">
-                                {user?.email}
+                                {user?.fullName ? user?.fullName : user?.email}
                               </Typography>
                               <Typography variant="body2" color="textSecondary">
-                                {user?.role}
+                                {user?.roleName}
                               </Typography>
                             </Stack>
                           </Stack>

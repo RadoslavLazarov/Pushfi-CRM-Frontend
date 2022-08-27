@@ -14,6 +14,7 @@ import navigation from 'menu-items';
 import useConfig from 'hooks/useConfig';
 import Breadcrumbs from 'components/@extended/Breadcrumbs';
 import { openDrawer } from 'store/reducers/menu';
+import { getRequiredEnums } from 'utils/EnumUtility';
 
 // ==============================|| MAIN LAYOUT ||============================== //
 
@@ -40,6 +41,9 @@ const MainLayout = () => {
       setOpen(!matchDownLG);
       dispatch(openDrawer({ drawerOpen: !matchDownLG }));
     }
+
+    const getEnums = async () => await getRequiredEnums();
+    getEnums();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [matchDownLG]);
 

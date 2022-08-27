@@ -1,3 +1,5 @@
+import { useEffect } from 'react';
+
 // project import
 import Routes from 'routes';
 import ThemeCustomization from 'themes';
@@ -14,21 +16,23 @@ import { JWTProvider as AuthProvider } from 'contexts/JWTContext';
 
 // ==============================|| APP - THEME, ROUTER, LOCAL  ||============================== //
 
-const App = () => (
-  <ThemeCustomization>
-    {/* <RTLLayout> */}
-    <Locales>
-      <ScrollTop>
-        <AuthProvider>
-          <>
-            <Routes />
-            <Snackbar />
-          </>
-        </AuthProvider>
-      </ScrollTop>
-    </Locales>
-    {/* </RTLLayout> */}
-  </ThemeCustomization>
-);
+const App = () => {
+  return (
+    <ThemeCustomization>
+      {/* <RTLLayout> */}
+      <Locales>
+        <ScrollTop>
+          <AuthProvider>
+            <>
+              <Routes />
+              <Snackbar />
+            </>
+          </AuthProvider>
+        </ScrollTop>
+      </Locales>
+      {/* </RTLLayout> */}
+    </ThemeCustomization>
+  );
+};
 
 export default App;

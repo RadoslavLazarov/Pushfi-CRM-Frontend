@@ -1,17 +1,21 @@
-// const baseUrl = 'https://localhost:44375/api';
-
-// export default {
-//   async logIn(user) {
-//     const response = await fetch(baseUrl + '/customerAuthentication/crmLogin', {
-//       method: 'POST',
-//       headers: new Headers({
-//         'Content-Type': 'application/json',
-//         Accept: 'application/json'
-//       }),
-//       body: JSON.stringify({
-//         email: user.email,
-//         password: user.password
-//       })
-//     });
-//   }
-// };
+export default {
+  getAuthToken() {
+    let result = null;
+    const authToken = localStorage.getItem('serviceToken');
+    if (authToken) {
+      result = authToken;
+    }
+    return result;
+  },
+  removeAuthToken() {
+    localStorage.removeItem('serviceToken');
+  },
+  getAccessToken() {
+    let result = null;
+    const authToken = this.getAuthToken();
+    if (authToken) {
+      result = authToken;
+    }
+    return result;
+  }
+};
