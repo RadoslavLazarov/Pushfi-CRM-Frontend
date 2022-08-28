@@ -276,16 +276,16 @@ const CustomersPage = () => {
   useEffect(() => {
     const fetchData = async () => {
       let data;
-      if (user.roleType === enums.RoleType.Broker) {
+      if (user?.roleType === enums.RoleType.Broker) {
         data = await customerService.getBrokerCustomers();
-      } else if (user.roleType === enums.RoleType.Admin) {
+      } else if (user?.roleType === enums.RoleType.Admin) {
         data = await customerService.getAllCustomers();
       }
 
       setCustomers(data);
     };
     fetchData();
-  }, [user.roleType]);
+  }, [user?.roleType]);
 
   const columns = useMemo(
     () => {
@@ -433,7 +433,7 @@ const CustomersPage = () => {
         }
       ];
 
-      if (user?.roleType === enums.RoleType.Admin) {
+      if (user?.roleType === enums?.RoleType?.Admin) {
         const brokerColumn = {
           Header: 'Broker',
           accessor: 'brokerCompanyName',
