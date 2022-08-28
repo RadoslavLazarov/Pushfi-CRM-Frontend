@@ -10,6 +10,7 @@ import {
   Button,
   Box,
   Chip,
+  CircularProgress,
   Dialog,
   Stack,
   Table,
@@ -259,6 +260,7 @@ CellActions.propTypes = {
 const CustomersPage = () => {
   const { user } = useAuth();
   const theme = useTheme();
+  const [isLoading, setIsLoading] = useState(false);
   const [customers, setCustomers] = useState([]);
 
   const [customer, setCustomer] = useState(null);
@@ -271,6 +273,7 @@ const CustomersPage = () => {
 
   useEffect(() => {
     const fetchData = async () => {
+      setIsLoading(true);
       let data;
       if (user?.roleType === enums?.RoleType?.Broker) {
         data = await customerService.getBrokerCustomers();
@@ -279,6 +282,7 @@ const CustomersPage = () => {
       }
 
       setCustomers(data);
+      setIsLoading(false);
     };
     fetchData();
   }, [user?.roleType]);
@@ -451,13 +455,19 @@ const CustomersPage = () => {
   return (
     <MainCard content={false}>
       <ScrollX>
-        <ReactTable
-          columns={columns}
-          data={customers}
-          handleAdd={handleAdd}
-          getHeaderProps={(column) => column.getSortByToggleProps()}
-          // renderRowSubComponent={renderRowSubComponent}
-        />
+        {!isLoading ? (
+          <ReactTable
+            columns={columns}
+            data={customers}
+            handleAdd={handleAdd}
+            getHeaderProps={(column) => column.getSortByToggleProps()}
+            // renderRowSubComponent={renderRowSubComponent}
+          />
+        ) : (
+          <Box sx={{ width: '100%', height: '100%', display: 'flex', justifyContent: 'center', alignItems: 'center', padding: '100px' }}>
+            <CircularProgress color="primary" />
+          </Box>
+        )}
       </ScrollX>
 
       {/* add customer dialog */}
