@@ -148,6 +148,8 @@ export function AvatarCustom({ avatarColor, fullName, size }) {
     lastNameLetter = names[1].split('')[0]?.toUpperCase();
   }
 
+  const avatarText = lastNameLetter ? firstNameLetter + lastNameLetter : firstNameLetter;
+
   return (
     <Box
       sx={{
@@ -163,7 +165,7 @@ export function AvatarCustom({ avatarColor, fullName, size }) {
         fontSize: 10
       }}
     >
-      {adminFirstLetter ? adminFirstLetter : firstNameLetter + lastNameLetter}
+      {adminFirstLetter ? adminFirstLetter : avatarText}
     </Box>
   );
 }
