@@ -399,7 +399,7 @@ const CustomersPage = () => {
                     color="secondary"
                     onClick={(e) => {
                       e.stopPropagation();
-                      toggleRowExpanded();
+                      // toggleRowExpanded();
                     }}
                   >
                     {collapseIcon}
@@ -410,8 +410,8 @@ const CustomersPage = () => {
                     color="primary"
                     onClick={(e) => {
                       e.stopPropagation();
-                      setCustomer(values);
-                      handleAdd();
+                      // setCustomer(values);
+                      // handleAdd();
                     }}
                   >
                     <EditTwoTone twoToneColor={theme.palette.primary.main} />
