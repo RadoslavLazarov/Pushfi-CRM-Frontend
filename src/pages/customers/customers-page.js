@@ -433,7 +433,7 @@ const CustomersPage = () => {
         }
       ];
 
-      if (user.roleType === enums.RoleType.Admin) {
+      if (user?.roleType === enums.RoleType.Admin) {
         const brokerColumn = {
           Header: 'Broker',
           accessor: 'brokerCompanyName',
