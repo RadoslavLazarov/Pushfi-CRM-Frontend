@@ -12,10 +12,10 @@ const RoleGuard = ({ children }) => {
   const navigate = useNavigate();
 
   useEffect(() => {
-    if (children.props.roles.indexOf(user.roleName) === -1) {
+    if (children.props.roles.indexOf(user?.roleName) === -1) {
       navigate('/dashboard', { replace: true });
     }
-  }, [children.props.roles, user.roleName, navigate]);
+  }, [children.props.roles, user?.roleName, navigate]);
 
   return children;
 };

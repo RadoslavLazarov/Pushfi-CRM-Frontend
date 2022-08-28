@@ -144,8 +144,8 @@ export function AvatarCustom({ avatarColor, fullName, size }) {
   let lastNameLetter;
 
   if (names?.length) {
-    firstNameLetter = names[0].split('')[0].toUpperCase();
-    lastNameLetter = names[1].split('')[0].toUpperCase();
+    firstNameLetter = names[0].split('')[0]?.toUpperCase();
+    lastNameLetter = names[1].split('')[0]?.toUpperCase();
   }
 
   return (
