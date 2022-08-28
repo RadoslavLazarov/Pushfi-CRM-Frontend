@@ -82,7 +82,7 @@ function ReactTable({ columns, data, getHeaderProps, renderRowSubComponent, hand
       // @ts-ignore
       filterTypes,
       // @ts-ignore
-      initialState: { pageIndex: 0, pageSize: 100, hiddenColumns: ['avatar', 'email'], sortBy: [sortBy] }
+      initialState: { pageIndex: 0, pageSize: 100, sortBy: [sortBy] }
     },
     useGlobalFilter,
     useFilters,
@@ -93,11 +93,11 @@ function ReactTable({ columns, data, getHeaderProps, renderRowSubComponent, hand
   );
 
   useEffect(() => {
-    if (matchDownSM) {
-      setHiddenColumns(['age', 'contact', 'visits', 'email', 'status', 'avatar']);
-    } else {
-      setHiddenColumns(['avatar', 'email']);
-    }
+    // if (matchDownSM) {
+    //   setHiddenColumns(['age', 'contact', 'visits', 'email', 'status', 'avatar']);
+    // } else {
+    //   setHiddenColumns(['avatar', 'email']);
+    // }
     // eslint-disable-next-line
   }, [matchDownSM]);
 
@@ -371,8 +371,12 @@ const CustomersPage = () => {
                 return <Chip color="secondary" label="REGISTERED" size="small" variant="light" />;
               case enums.ProcessStatus.Authentication:
                 return <Chip color="primary" label="AUTHENTICATED" size="small" variant="light" />;
-              case enums.ProcessStatus.GetOffer:
-                return <Chip color="success" label="OFFER SENT" size="small" variant="light" />;
+              case enums.ProcessStatus.CreditApproved:
+                return <Chip color="success" label="CREDIT APPROVED" size="small" variant="light" />;
+              case enums.ProcessStatus.CreditFreeze:
+                return <Chip color="warning" label="CREDIT FREEZE" size="small" variant="light" />;
+              case enums.ProcessStatus.CreditDecline:
+                return <Chip color="error" label="CREDIT DECLINED" size="small" variant="light" />;
               default:
                 return <Chip color="primary" label="NONE" size="small" variant="light" />;
             }
