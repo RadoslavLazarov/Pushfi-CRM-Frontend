@@ -1,6 +1,6 @@
 /* eslint-disable */
 import PropTypes from 'prop-types';
-import { useCallback, useEffect, useMemo, useState, Fragment } from 'react';
+import { useEffect, useMemo, useState, Fragment } from 'react';
 import moment from 'moment';
 
 // material-ui
@@ -32,7 +32,6 @@ import { AvatarCustom } from 'components/@extended/Avatar';
 import IconButton from 'components/@extended/IconButton';
 import MainCard from 'components/MainCard';
 import ScrollX from 'components/ScrollX';
-import makeData from 'data/react-table';
 import { renderFilterTypes, GlobalFilter } from 'utils/react-table';
 import { HeaderSort, IndeterminateCheckbox, SortingSelect, TablePagination, TableRowSelection } from 'components/third-party/ReactTable';
 import customerService from 'services/customerService';
@@ -42,8 +41,6 @@ import useAuth from 'hooks/useAuth';
 
 // assets
 import { CloseOutlined, PlusOutlined, EyeTwoTone, EditTwoTone, DeleteTwoTone } from '@ant-design/icons';
-
-const avatarImage = require.context('assets/images/users', true);
 
 // ==============================|| REACT TABLE ||============================== //
 
@@ -95,7 +92,6 @@ function ReactTable({ columns, data, getHeaderProps, renderRowSubComponent, hand
   );
 
   useEffect(() => {
-    console.log('enums: ', enums);
     if (matchDownSM) {
       setHiddenColumns(['age', 'contact', 'visits', 'email', 'status', 'avatar']);
     } else {
@@ -276,9 +272,9 @@ const CustomersPage = () => {
   useEffect(() => {
     const fetchData = async () => {
       let data;
-      if (user?.roleType === enums.RoleType.Broker) {
+      if (user?.roleType === enums?.RoleType?.Broker) {
         data = await customerService.getBrokerCustomers();
-      } else if (user?.roleType === enums.RoleType.Admin) {
+      } else if (user?.roleType === enums?.RoleType?.Admin) {
         data = await customerService.getAllCustomers();
       }
 
