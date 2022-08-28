@@ -285,7 +285,7 @@ const CustomersPage = () => {
       setIsLoading(false);
     };
     fetchData();
-  }, [user?.roleType]);
+  }, []);
 
   const columns = useMemo(
     () => {
