@@ -41,9 +41,6 @@ const MainLayout = () => {
       setOpen(!matchDownLG);
       dispatch(openDrawer({ drawerOpen: !matchDownLG }));
     }
-
-    const getEnums = async () => await getRequiredEnums();
-    getEnums();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [matchDownLG]);
 
@@ -51,6 +48,11 @@ const MainLayout = () => {
     if (open !== drawerOpen) setOpen(drawerOpen);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [drawerOpen]);
+
+  useEffect(() => {
+    const getEnums = async () => await getRequiredEnums();
+    getEnums();
+  }, []);
 
   return (
     <Box sx={{ display: 'flex', width: '100%' }}>
