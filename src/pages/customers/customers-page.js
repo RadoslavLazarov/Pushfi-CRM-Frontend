@@ -1,3 +1,4 @@
+/* eslint-disable */
 import PropTypes from 'prop-types';
 import { useCallback, useEffect, useMemo, useState, Fragment } from 'react';
 import moment from 'moment';
@@ -284,7 +285,7 @@ const CustomersPage = () => {
       setCustomers(data);
     };
     fetchData();
-  }, []);
+  }, [user.roleType]);
 
   const columns = useMemo(
     () => {
@@ -316,6 +317,7 @@ const CustomersPage = () => {
         {
           Header: 'Registration Date',
           accessor: 'createdAt',
+          // eslint-disable-next-line
           Cell: ({ value }) => <div>{moment(value).format(US_DATE_TIME_FORMAT)}</div>
         },
         {
@@ -332,6 +334,7 @@ const CustomersPage = () => {
           Header: 'Location',
           accessor: 'city',
           // className: 'cell-right',
+          // eslint-disable-next-line
           Cell: ({ row }) => (
             <Box
             // sx={{

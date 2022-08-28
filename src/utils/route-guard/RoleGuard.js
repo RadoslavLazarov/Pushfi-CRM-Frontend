@@ -15,7 +15,7 @@ const RoleGuard = ({ children }) => {
     if (children.props.roles.indexOf(user.roleName) === -1) {
       navigate('/dashboard', { replace: true });
     }
-  }, []);
+  }, [children.props.roles, user.roleName, navigate]);
 
   return children;
 };

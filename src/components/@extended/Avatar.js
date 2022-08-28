@@ -112,6 +112,14 @@ export default function Avatar({ variant = 'circular', children, color = 'primar
   );
 }
 
+Avatar.propTypes = {
+  children: PropTypes.node,
+  color: PropTypes.string,
+  type: PropTypes.string,
+  size: PropTypes.string,
+  variant: PropTypes.string
+};
+
 export function AvatarCustom({ avatarColor, fullName, size }) {
   const { user } = useAuth();
   let names;
@@ -160,10 +168,8 @@ export function AvatarCustom({ avatarColor, fullName, size }) {
   );
 }
 
-Avatar.propTypes = {
-  children: PropTypes.node,
-  color: PropTypes.string,
-  type: PropTypes.string,
-  size: PropTypes.string,
-  variant: PropTypes.string
+AvatarCustom.propTypes = {
+  avatarColor: PropTypes.string,
+  fullName: PropTypes.string,
+  size: PropTypes.number
 };
