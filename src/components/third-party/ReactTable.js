@@ -30,26 +30,28 @@ import { CaretUpOutlined, CaretDownOutlined, CloseSquareFilled, DragOutlined } f
 
 // ==============================|| HEADER SORT ||============================== //
 
-export const HeaderSort = ({ column, sort }) => {
+export const HeaderSort = ({ column, sort, handleSortChange }) => {
   const theme = useTheme();
   return (
     <Stack direction="row" spacing={1} alignItems="center" sx={{ display: 'inline-flex' }}>
       <Box>{column.render('Header')}</Box>
       {!column.disableSortBy && (
         <Stack sx={{ color: 'secondary.light' }} {...(sort && { ...column.getHeaderProps(column.getSortByToggleProps()) })}>
-          <CaretUpOutlined
-            style={{
-              fontSize: '0.625rem',
-              color: column.isSorted && !column.isSortedDesc ? theme.palette.text.secondary : 'inherit'
-            }}
-          />
-          <CaretDownOutlined
-            style={{
-              fontSize: '0.625rem',
-              marginTop: -2,
-              color: column.isSortedDesc ? theme.palette.text.secondary : 'inherit'
-            }}
-          />
+          <Box>
+            <CaretUpOutlined
+              style={{
+                fontSize: '0.625rem',
+                color: column.isSorted && !column.isSortedDesc ? theme.palette.text.secondary : 'inherit'
+              }}
+            />
+            <CaretDownOutlined
+              style={{
+                fontSize: '0.625rem',
+                marginTop: -2,
+                color: column.isSortedDesc ? theme.palette.text.secondary : 'inherit'
+              }}
+            />
+          </Box>
         </Stack>
       )}
     </Stack>
@@ -149,6 +151,98 @@ TablePagination.propTypes = {
   pageIndex: PropTypes.number,
   pageSize: PropTypes.number,
   rows: PropTypes.array
+};
+
+export const CustomPagination = ({ gotoPage, rows, totalCount, setPageSize, pageSize, pageIndex, getCustomers }) => {
+  const [open, setOpen] = useState(false);
+
+  const handleClose = () => {
+    setOpen(false);
+  };
+
+  const handleOpen = () => {
+    setOpen(true);
+  };
+
+  const handleChangePagination = (event, value) => {
+    getCustomers(value, pageSize);
+    gotoPage(value - 1);
+  };
+
+  const handleChange = (event) => {
+    console.log('handleChange', +event.target.value);
+    getCustomers(pageIndex, +event.target.value);
+    setPageSize(+event.target.value);
+  };
+
+  return (
+    <Grid container alignItems="center" justifyContent="space-between" sx={{ width: 'auto' }}>
+      <Grid item>
+        <Stack direction="row" spacing={1} alignItems="center">
+          <Stack direction="row" spacing={1} alignItems="center">
+            <Typography variant="caption" color="secondary">
+              Row per page
+            </Typography>
+            <FormControl sx={{ m: 1 }}>
+              <Select
+                id="demo-controlled-open-select"
+                open={open}
+                onClose={handleClose}
+                onOpen={handleOpen}
+                // @ts-ignore
+                value={pageSize}
+                onChange={handleChange}
+                size="small"
+                sx={{ '& .MuiSelect-select': { py: 0.75, px: 1.25 } }}
+              >
+                <MenuItem value={5}>5</MenuItem>
+                <MenuItem value={10}>10</MenuItem>
+                <MenuItem value={25}>25</MenuItem>
+                <MenuItem value={50}>50</MenuItem>
+                <MenuItem value={100}>100</MenuItem>
+              </Select>
+            </FormControl>
+          </Stack>
+          <Typography variant="caption" color="secondary">
+            Go to
+          </Typography>
+          <TextField
+            size="small"
+            type="number"
+            // @ts-ignore
+            value={pageIndex + 1}
+            onChange={(e) => {
+              const page = e.target.value ? Number(e.target.value) : 0;
+              getCustomers(page, pageSize);
+              gotoPage(page - 1);
+            }}
+            sx={{ '& .MuiOutlinedInput-input': { py: 0.75, px: 1.25, width: 36 } }}
+          />
+        </Stack>
+      </Grid>
+      <Grid item sx={{ mt: { xs: 2, sm: 0 } }}>
+        <Pagination
+          // @ts-ignore
+          count={Math.ceil(totalCount / pageSize)}
+          // @ts-ignore
+          page={pageIndex ? pageIndex + 1 : 1}
+          onChange={handleChangePagination}
+          color="primary"
+          variant="combined"
+          showFirstButton
+          showLastButton
+        />
+      </Grid>
+    </Grid>
+  );
+};
+
+CustomPagination.propTypes = {
+  gotoPage: PropTypes.func,
+  setPageSize: PropTypes.func,
+  pageIndex: PropTypes.number,
+  pageSize: PropTypes.number,
+  totalCount: PropTypes.number
 };
 
 // ==============================|| SELECTION - PREVIEW ||============================== //

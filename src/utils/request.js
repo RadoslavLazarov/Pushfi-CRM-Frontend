@@ -65,7 +65,7 @@ export function getQueryString(filter = {}, sorts = [], pageNumber, pageSize) {
       for (let i = 0; i < value.length; i++) {
         filterString += `${property}[${i}]=${encodeURIComponent(value[i])}&`;
       }
-    } else if (!string.isNullOrEmpty(value)) {
+    } else if (value) {
       filterString += `${property}=${encodeURIComponent(value)}&`;
     }
   }
@@ -83,7 +83,7 @@ export function getQueryString(filter = {}, sorts = [], pageNumber, pageSize) {
     sortString += `sorts[${i}].dir=${encodeURIComponent(sort.dir)}&`;
   }
 
-  if (!sortString) {
+  if (sortString) {
     sortString = sortString.slice(0, -1);
   }
 

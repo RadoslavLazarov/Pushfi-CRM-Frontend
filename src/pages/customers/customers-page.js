@@ -1,6 +1,7 @@
 /* eslint-disable */
 import PropTypes from 'prop-types';
 import { useEffect, useMemo, useState, Fragment } from 'react';
+import { useDispatch } from 'react-redux';
 import moment from 'moment';
 
 // material-ui
@@ -12,6 +13,10 @@ import {
   Chip,
   CircularProgress,
   Dialog,
+  DialogTitle,
+  DialogContent,
+  DialogContentText,
+  DialogActions,
   Stack,
   Table,
   TableBody,
@@ -24,7 +29,8 @@ import {
 
 // third-party
 import NumberFormat from 'react-number-format';
-import { useFilters, useExpanded, useGlobalFilter, useRowSelect, useSortBy, useTable, usePagination } from 'react-table';
+import { useFilters, useExpanded, useGlobalFilter, useRowSelect, useSortBy, useTable, usePagination, SortingState } from 'react-table';
+// import { ColumnDef, flexRender, getCoreRowModel, getSortedRowModel, SortingState, useReactTable } from '@tanstack/react-table';
 
 // project import
 // import CustomerView from 'sections/apps/customer/CustomerView';
@@ -34,23 +40,46 @@ import IconButton from 'components/@extended/IconButton';
 import MainCard from 'components/MainCard';
 import ScrollX from 'components/ScrollX';
 import { renderFilterTypes, GlobalFilter } from 'utils/react-table';
-import { HeaderSort, IndeterminateCheckbox, SortingSelect, TablePagination, TableRowSelection } from 'components/third-party/ReactTable';
+import {
+  HeaderSort,
+  IndeterminateCheckbox,
+  SortingSelect,
+  TablePagination,
+  TableRowSelection,
+  CustomPagination
+} from 'components/third-party/ReactTable';
 import customerService from 'services/customerService';
 import { enums } from 'utils/EnumUtility';
 import { US_DATE_TIME_FORMAT } from 'utils/constants/dateConstants';
 import useAuth from 'hooks/useAuth';
+import { openSnackbar } from 'store/reducers/snackbar';
 
 // assets
 import { CloseOutlined, PlusOutlined, EyeTwoTone, EditTwoTone, DeleteTwoTone } from '@ant-design/icons';
 
+const sortByInitialState = { field: 'createdAt', dir: 'desc' };
+
 // ==============================|| REACT TABLE ||============================== //
 
-function ReactTable({ columns, data, getHeaderProps, renderRowSubComponent, handleAdd }) {
+function ReactTable({
+  columns,
+  data,
+  getHeaderProps,
+  renderRowSubComponent,
+  handleAdd,
+  totalCount,
+  getCustomers,
+  pageLength,
+  pageNumber,
+  sort,
+  handleSortChange
+}) {
   const theme = useTheme();
   const matchDownSM = useMediaQuery(theme.breakpoints.down('sm'));
 
   const filterTypes = useMemo(() => renderFilterTypes, []);
-  const sortBy = { id: 'createdAt', desc: true };
+  // const sortBy = { id: sortByInitialState.field, desc: sortByInitialState.dir === 'desc' ? true : false };
+  // const sortBy = { id: 'createdAt', desc: true };
 
   const {
     getTableProps,
@@ -75,6 +104,7 @@ function ReactTable({ columns, data, getHeaderProps, renderRowSubComponent, hand
     setGlobalFilter,
     // @ts-ignore
     setSortBy
+    // onSortingChange: setSorting,
   } = useTable(
     {
       columns,
@@ -82,7 +112,12 @@ function ReactTable({ columns, data, getHeaderProps, renderRowSubComponent, hand
       // @ts-ignore
       filterTypes,
       // @ts-ignore
-      initialState: { pageIndex: 0, pageSize: 100, sortBy: [sortBy] }
+      initialState: {
+        pageIndex: 0,
+        pageSize: pageLength ? pageLength : pageSize,
+        sortBy: [{ id: sort.field, desc: sort.dir === 'desc' ? true : false }]
+      }
+      // manualSorting: true,
     },
     useGlobalFilter,
     useFilters,
@@ -92,18 +127,9 @@ function ReactTable({ columns, data, getHeaderProps, renderRowSubComponent, hand
     useRowSelect
   );
 
-  useEffect(() => {
-    // if (matchDownSM) {
-    //   setHiddenColumns(['age', 'contact', 'visits', 'email', 'status', 'avatar']);
-    // } else {
-    //   setHiddenColumns(['avatar', 'email']);
-    // }
-    // eslint-disable-next-line
-  }, [matchDownSM]);
-
   return (
     <>
-      <TableRowSelection selected={Object.keys(selectedRowIds).length} />
+      {/* <TableRowSelection selected={Object.keys(selectedRowIds).length} /> */}
       <Stack spacing={3}>
         <Stack
           direction={matchDownSM ? 'column' : 'row'}
@@ -112,14 +138,14 @@ function ReactTable({ columns, data, getHeaderProps, renderRowSubComponent, hand
           spacing={1}
           sx={{ p: 3, pb: 0 }}
         >
-          <GlobalFilter
+          {/* <GlobalFilter
             preGlobalFilteredRows={preGlobalFilteredRows}
             globalFilter={globalFilter}
             setGlobalFilter={setGlobalFilter}
             size="small"
-          />
+          /> */}
           <Stack direction={matchDownSM ? 'column' : 'row'} alignItems="center" spacing={1}>
-            <SortingSelect sortBy={sortBy.id} setSortBy={setSortBy} allColumns={allColumns} />
+            <SortingSelect sortBy={sort.id} setSortBy={setSortBy} allColumns={allColumns} />
             {/* <Button variant="contained" startIcon={<PlusOutlined />} onClick={handleAdd}>
               Add Customer
             </Button> */}
@@ -131,8 +157,12 @@ function ReactTable({ columns, data, getHeaderProps, renderRowSubComponent, hand
             {headerGroups.map((headerGroup, i) => (
               <TableRow key={i} {...headerGroup.getHeaderGroupProps()} sx={{ '& > th:first-of-type': { width: '58px' } }}>
                 {headerGroup.headers.map((column, index) => (
-                  <TableCell key={index} {...column.getHeaderProps([{ className: column.className }, getHeaderProps(column)])}>
-                    <HeaderSort column={column} />
+                  <TableCell
+                    key={index}
+                    {...column.getHeaderProps([{ className: column.className }, getHeaderProps(column)])}
+                    onClick={() => handleSortChange(column)}
+                  >
+                    <HeaderSort column={column} handleSortChange={handleSortChange} />
                   </TableCell>
                 ))}
               </TableRow>
@@ -165,11 +195,20 @@ function ReactTable({ columns, data, getHeaderProps, renderRowSubComponent, hand
                 </Fragment>
               );
             })}
-            {/* <TableRow sx={{ '&:hover': { bgcolor: 'transparent !important' } }}>
+            <TableRow sx={{ '&:hover': { bgcolor: 'transparent !important' } }}>
               <TableCell sx={{ p: 2, py: 3 }} colSpan={9}>
-                <TablePagination gotoPage={gotoPage} rows={rows} setPageSize={setPageSize} pageSize={pageSize} pageIndex={pageIndex} />
+                {/* <TablePagination gotoPage={gotoPage} rows={rows} setPageSize={setPageSize} pageSize={pageSize} pageIndex={pageIndex} /> */}
+                <CustomPagination
+                  gotoPage={gotoPage}
+                  rows={rows}
+                  totalCount={totalCount}
+                  setPageSize={setPageSize}
+                  pageSize={pageLength ? pageLength : pageSize}
+                  pageIndex={pageNumber ? pageNumber - 1 : pageIndex}
+                  getCustomers={getCustomers}
+                />
               </TableCell>
-            </TableRow> */}
+            </TableRow>
           </TableBody>
         </Table>
       </Stack>
@@ -182,7 +221,9 @@ ReactTable.propTypes = {
   data: PropTypes.array,
   getHeaderProps: PropTypes.func,
   handleAdd: PropTypes.func,
-  renderRowSubComponent: PropTypes.any
+  renderRowSubComponent: PropTypes.any,
+  totalCount: PropTypes.number,
+  getCustomers: PropTypes.func
 };
 
 // ==============================|| CUSTOMER - LIST VIEW ||============================== //
@@ -259,9 +300,17 @@ CellActions.propTypes = {
 
 const CustomersPage = () => {
   const { user } = useAuth();
+  const dispatch = useDispatch();
   const theme = useTheme();
+  const fullScreen = useMediaQuery(theme.breakpoints.down('md'));
   const [isLoading, setIsLoading] = useState(false);
   const [customers, setCustomers] = useState([]);
+  const [pageSize, setPageSize] = useState(5);
+  const [sortBy, setSortBy] = useState(sortByInitialState);
+  const [pageNumber, setPageNumber] = useState(1);
+  const [customersTotalCount, setCustomersTotalCount] = useState(0);
+  const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
+  const [selectedCustomerToDelete, setSelectedCustomerToDelete] = useState('');
 
   const [customer, setCustomer] = useState(null);
   const [add, setAdd] = useState(false);
@@ -271,21 +320,75 @@ const CustomersPage = () => {
     if (customer && !add) setCustomer(null);
   };
 
-  useEffect(() => {
-    const fetchData = async () => {
-      setIsLoading(true);
-      let data;
-      if (user?.roleType === enums?.RoleType?.Broker) {
-        data = await customerService.getBrokerCustomers();
-      } else if (user?.roleType === enums?.RoleType?.Admin) {
-        data = await customerService.getAllCustomers();
-      }
+  const getCustomers = async (pageNumber = 1, pageSize = 5) => {
+    setIsLoading(true);
 
-      setCustomers(data);
-      setIsLoading(false);
-    };
-    fetchData();
-  }, []);
+    let data;
+    let sortByField;
+
+    if (sortBy.field == 'fullName') {
+      sortByField = 'firstName';
+    } else if (sortBy.field == 'status') {
+      sortByField = 'processStatus';
+    } else {
+      sortByField = sortBy.field;
+    }
+
+    if (user?.roleType === enums?.RoleType?.Broker) {
+      data = await customerService.getBrokerCustomers({ pageNumber, pageSize }, [{ field: sortByField, dir: sortBy.dir }]);
+    } else if (user?.roleType === enums?.RoleType?.Admin) {
+      data = await customerService.getAllCustomers({ pageNumber, pageSize }, [{ field: sortByField, dir: sortBy.dir }]);
+    }
+
+    setCustomers(data.items);
+    setCustomersTotalCount(data.totalCount);
+    setPageSize(pageSize);
+    setPageNumber(pageNumber);
+    setIsLoading(false);
+  };
+
+  const handleSortChange = (column) => {
+    column.toggleSortBy();
+    setSortBy({ field: column.id, dir: !column.isSortedDesc ? 'desc' : 'asc' });
+  };
+
+  const handleDeleteModalOpen = (userId) => {
+    setSelectedCustomerToDelete(userId);
+    setIsDeleteModalOpen(true);
+  };
+
+  const handleDeleteModalClose = () => {
+    setSelectedCustomerToDelete('');
+    setIsDeleteModalOpen(false);
+  };
+
+  const handleDeleteModalAgree = async () => {
+    setIsLoading(true);
+    const response = await customerService.deleteCustomer({ userId: selectedCustomerToDelete });
+
+    dispatch(
+      openSnackbar({
+        open: true,
+        anchorOrigin: { vertical: 'bottom', horizontal: 'center' },
+        message: response.success ? 'Successfully customer deletion' : 'Customer deletion failed',
+        variant: 'alert',
+        alert: {
+          color: response.success ? 'success' : 'error'
+        },
+        close: false
+      })
+    );
+    setSelectedCustomerToDelete('');
+    setIsDeleteModalOpen(false);
+
+    if (response.success) {
+      getCustomers();
+    }
+  };
+
+  useEffect(() => {
+    getCustomers();
+  }, [sortBy]);
 
   const columns = useMemo(
     () => {
@@ -317,6 +420,7 @@ const CustomersPage = () => {
         {
           Header: 'Registration Date',
           accessor: 'createdAt',
+          // sortType: handleSortChange,
           // eslint-disable-next-line
           Cell: ({ value }) => <div>{moment(value).format(US_DATE_TIME_FORMAT)}</div>
         },
@@ -367,15 +471,15 @@ const CustomersPage = () => {
           // eslint-disable-next-line
           Cell: ({ row }) => {
             switch (row.original.processStatus) {
-              case enums.ProcessStatus.Registration:
+              case enums?.ProcessStatus.Registration:
                 return <Chip color="secondary" label="REGISTERED" size="small" variant="light" />;
-              case enums.ProcessStatus.Authentication:
+              case enums?.ProcessStatus.Authentication:
                 return <Chip color="primary" label="AUTHENTICATED" size="small" variant="light" />;
-              case enums.ProcessStatus.CreditApproved:
+              case enums?.ProcessStatus.CreditApproved:
                 return <Chip color="success" label="CREDIT APPROVED" size="small" variant="light" />;
-              case enums.ProcessStatus.CreditFreeze:
+              case enums?.ProcessStatus.CreditFreeze:
                 return <Chip color="warning" label="CREDIT FREEZE" size="small" variant="light" />;
-              case enums.ProcessStatus.CreditDecline:
+              case enums?.ProcessStatus.CreditDecline:
                 return <Chip color="error" label="CREDIT DECLINED" size="small" variant="light" />;
               default:
                 return <Chip color="primary" label="NONE" size="small" variant="light" />;
@@ -409,7 +513,7 @@ const CustomersPage = () => {
                     {collapseIcon}
                   </IconButton>
                 </Tooltip>
-                <Tooltip title="Edit">
+                {/* <Tooltip title="Edit">
                   <IconButton
                     color="primary"
                     onClick={(e) => {
@@ -420,14 +524,9 @@ const CustomersPage = () => {
                   >
                     <EditTwoTone twoToneColor={theme.palette.primary.main} />
                   </IconButton>
-                </Tooltip>
+                </Tooltip> */}
                 <Tooltip title="Delete">
-                  <IconButton
-                    color="error"
-                    onClick={(e) => {
-                      e.stopPropagation();
-                    }}
-                  >
+                  <IconButton color="error" onClick={() => handleDeleteModalOpen(row.original.userId)}>
                     <DeleteTwoTone twoToneColor={theme.palette.error.main} />
                   </IconButton>
                 </Tooltip>
@@ -457,28 +556,50 @@ const CustomersPage = () => {
   // const renderRowSubComponent = useCallback(({ row }) => <CustomerView data={data[row.id]} />, [data]);
 
   return (
-    <MainCard content={false}>
-      <ScrollX>
-        {!isLoading ? (
-          <ReactTable
-            columns={columns}
-            data={customers}
-            handleAdd={handleAdd}
-            getHeaderProps={(column) => column.getSortByToggleProps()}
-            // renderRowSubComponent={renderRowSubComponent}
-          />
-        ) : (
-          <Box sx={{ width: '100%', height: '100%', display: 'flex', justifyContent: 'center', alignItems: 'center', padding: '100px' }}>
-            <CircularProgress color="primary" />
-          </Box>
-        )}
-      </ScrollX>
+    <>
+      <MainCard content={false}>
+        <ScrollX>
+          {!isLoading ? (
+            <ReactTable
+              columns={columns}
+              data={customers}
+              handleAdd={handleAdd}
+              getHeaderProps={(column) => column.getSortByToggleProps()}
+              totalCount={customersTotalCount}
+              pageLength={pageSize}
+              pageNumber={pageNumber}
+              sort={sortBy}
+              getCustomers={getCustomers}
+              handleSortChange={handleSortChange}
+              // renderRowSubComponent={renderRowSubComponent}
+            />
+          ) : (
+            <Box sx={{ width: '100%', height: '100%', display: 'flex', justifyContent: 'center', alignItems: 'center', padding: '100px' }}>
+              <CircularProgress color="primary" />
+            </Box>
+          )}
+        </ScrollX>
 
-      {/* add customer dialog */}
-      {/* <Dialog maxWidth="sm" fullWidth onClose={handleAdd} open={add} sx={{ '& .MuiDialog-paper': { p: 0 } }}>
+        {/* add customer dialog */}
+        {/* <Dialog maxWidth="sm" fullWidth onClose={handleAdd} open={add} sx={{ '& .MuiDialog-paper': { p: 0 } }}>
         {add && <AddCustomer customer={customer} onCancel={handleAdd} />}
       </Dialog> */}
-    </MainCard>
+      </MainCard>
+      <Dialog fullScreen={fullScreen} open={isDeleteModalOpen} onClose={handleDeleteModalClose} aria-labelledby="responsive-dialog-title">
+        <Box sx={{ p: 1, py: 1.5 }}>
+          <DialogTitle id="responsive-dialog-title">This action will delete the customer from PushFi and Enfortra systems</DialogTitle>
+          <DialogContent>
+            <DialogContentText>Are you sure you want to delete the customer?</DialogContentText>
+          </DialogContent>
+          <DialogActions>
+            <Button onClick={handleDeleteModalClose}>Cancel</Button>
+            <Button color="error" variant="contained" onClick={handleDeleteModalAgree} autoFocus>
+              Delete
+            </Button>
+          </DialogActions>
+        </Box>
+      </Dialog>
+    </>
   );
 };
 
