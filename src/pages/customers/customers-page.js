@@ -482,7 +482,7 @@ const CustomersPage = () => {
               case enums.ProcessStatus.CreditDecline:
                 return <Chip color="error" label="CREDIT DECLINED" size="small" variant="light" />;
               default:
-                return <Chip color="primary" label="NONE" size="small" variant="light" />;
+                return <Chip color="secondary" label="REGISTERED" size="small" variant="light" />;
             }
           }
         },
