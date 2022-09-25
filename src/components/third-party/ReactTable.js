@@ -30,7 +30,7 @@ import { CaretUpOutlined, CaretDownOutlined, CloseSquareFilled, DragOutlined } f
 
 // ==============================|| HEADER SORT ||============================== //
 
-export const HeaderSort = ({ column, sort, handleSortChange }) => {
+export const HeaderSort = ({ column, sort }) => {
   const theme = useTheme();
   return (
     <Stack direction="row" spacing={1} alignItems="center" sx={{ display: 'inline-flex' }}>
@@ -153,7 +153,7 @@ TablePagination.propTypes = {
   rows: PropTypes.array
 };
 
-export const CustomPagination = ({ gotoPage, rows, totalCount, setPageSize, pageSize, pageIndex, getCustomers }) => {
+export const CustomPagination = ({ gotoPage, totalCount, setPageSize, pageSize, pageIndex, getCustomers }) => {
   const [open, setOpen] = useState(false);
 
   const handleClose = () => {
@@ -242,7 +242,8 @@ CustomPagination.propTypes = {
   setPageSize: PropTypes.func,
   pageIndex: PropTypes.number,
   pageSize: PropTypes.number,
-  totalCount: PropTypes.number
+  totalCount: PropTypes.number,
+  getCustomers: PropTypes.func
 };
 
 // ==============================|| SELECTION - PREVIEW ||============================== //
