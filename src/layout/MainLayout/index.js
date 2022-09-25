@@ -51,10 +51,12 @@ const MainLayout = () => {
   }, [drawerOpen]);
 
   useEffect(() => {
-    const getEnums = async () => await getRequiredEnums();
-    getEnums();
+    const getEnums = async () => {
+      await getRequiredEnums();
+      setIsLoaded(true);
+    };
 
-    setIsLoaded(true);
+    getEnums();
   }, []);
 
   return (
