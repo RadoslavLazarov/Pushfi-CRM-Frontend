@@ -1,13 +1,12 @@
 import { lazy } from 'react';
 
 // project import
-import MainLayout from 'layout/MainLayout';
 import Loadable from 'components/Loadable';
 import AuthGuard from 'utils/route-guard/AuthGuard';
 import RoleGuard from 'utils/route-guard/RoleGuard';
-import { enums } from 'utils/EnumUtility';
+// import { enums } from 'utils/EnumUtility';
 
-// render - sample page
+const MainLayout = Loadable(lazy(() => import('layout/MainLayout')));
 const Dashboard = Loadable(lazy(() => import('pages/dashboard')));
 const CustomersPage = Loadable(lazy(() => import('pages/customers/customers-page')));
 

@@ -21,6 +21,7 @@ import { getRequiredEnums } from 'utils/EnumUtility';
 const MainLayout = () => {
   const theme = useTheme();
   const matchDownLG = useMediaQuery(theme.breakpoints.down('xl'));
+  const [isLoaded, setIsLoaded] = useState(false);
 
   const { container, miniDrawer } = useConfig();
   const dispatch = useDispatch();
@@ -52,9 +53,11 @@ const MainLayout = () => {
   useEffect(() => {
     const getEnums = async () => await getRequiredEnums();
     getEnums();
+
+    setIsLoaded(true);
   }, []);
 
-  return (
+  return isLoaded ? (
     <Box sx={{ display: 'flex', width: '100%' }}>
       <Header open={open} handleDrawerToggle={handleDrawerToggle} />
       <Drawer open={open} handleDrawerToggle={handleDrawerToggle} />
@@ -79,7 +82,7 @@ const MainLayout = () => {
         )}
       </Box>
     </Box>
-  );
+  ) : null;
 };
 
 export default MainLayout;

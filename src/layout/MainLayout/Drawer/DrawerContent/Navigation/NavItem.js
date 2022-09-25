@@ -43,7 +43,6 @@ const NavItem = ({ item, level }) => {
     if (item.roles?.indexOf(user?.roleName) === -1) {
       setMatchRole(false);
     }
-    console.log(matchRole);
 
     if (pathname && pathname.includes('product-details')) {
       if (item.url && item.url.includes('product-details')) {

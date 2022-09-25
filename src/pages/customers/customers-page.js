@@ -334,9 +334,9 @@ const CustomersPage = () => {
       sortByField = sortBy.field;
     }
 
-    if (user?.roleType === enums?.RoleType?.Broker) {
+    if (user.roleType === enums.RoleType.Broker) {
       data = await customerService.getBrokerCustomers({ pageNumber, pageSize }, [{ field: sortByField, dir: sortBy.dir }]);
-    } else if (user?.roleType === enums?.RoleType?.Admin) {
+    } else if (user.roleType === enums.RoleType.Admin) {
       data = await customerService.getAllCustomers({ pageNumber, pageSize }, [{ field: sortByField, dir: sortBy.dir }]);
     }
 
@@ -471,15 +471,15 @@ const CustomersPage = () => {
           // eslint-disable-next-line
           Cell: ({ row }) => {
             switch (row.original.processStatus) {
-              case enums?.ProcessStatus.Registration:
+              case enums.ProcessStatus.Registration:
                 return <Chip color="secondary" label="REGISTERED" size="small" variant="light" />;
-              case enums?.ProcessStatus.Authentication:
+              case enums.ProcessStatus.Authentication:
                 return <Chip color="primary" label="AUTHENTICATED" size="small" variant="light" />;
-              case enums?.ProcessStatus.CreditApproved:
+              case enums.ProcessStatus.CreditApproved:
                 return <Chip color="success" label="CREDIT APPROVED" size="small" variant="light" />;
-              case enums?.ProcessStatus.CreditFreeze:
+              case enums.ProcessStatus.CreditFreeze:
                 return <Chip color="warning" label="CREDIT FREEZE" size="small" variant="light" />;
-              case enums?.ProcessStatus.CreditDecline:
+              case enums.ProcessStatus.CreditDecline:
                 return <Chip color="error" label="CREDIT DECLINED" size="small" variant="light" />;
               default:
                 return <Chip color="primary" label="NONE" size="small" variant="light" />;
@@ -536,7 +536,7 @@ const CustomersPage = () => {
         }
       ];
 
-      if (user?.roleType === enums?.RoleType?.Admin) {
+      if (user.roleType === enums.RoleType.Admin) {
         const brokerColumn = {
           Header: 'Broker',
           accessor: 'brokerCompanyName',
