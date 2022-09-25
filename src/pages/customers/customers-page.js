@@ -145,7 +145,7 @@ function ReactTable({
             size="small"
           /> */}
           <Stack direction={matchDownSM ? 'column' : 'row'} alignItems="center" spacing={1}>
-            <SortingSelect sortBy={sort.id} setSortBy={setSortBy} allColumns={allColumns} />
+            <SortingSelect sortBy={sort.field} setSortBy={setSortBy} allColumns={allColumns} />
             {/* <Button variant="contained" startIcon={<PlusOutlined />} onClick={handleAdd}>
               Add Customer
             </Button> */}
