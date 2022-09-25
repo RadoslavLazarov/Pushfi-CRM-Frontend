@@ -57,32 +57,42 @@ const MainLayout = () => {
     setIsLoaded(true);
   }, []);
 
-  return isLoaded ? (
-    <Box sx={{ display: 'flex', width: '100%' }}>
-      <Header open={open} handleDrawerToggle={handleDrawerToggle} />
-      <Drawer open={open} handleDrawerToggle={handleDrawerToggle} />
-      <Box component="main" sx={{ width: 'calc(100% - 260px)', flexGrow: 1, p: { xs: 2, sm: 3 } }}>
-        <Toolbar />
-        {container && (
-          <Container
-            maxWidth="lg"
-            sx={{ px: { xs: 0, sm: 2 }, position: 'relative', minHeight: 'calc(100vh - 110px)', display: 'flex', flexDirection: 'column' }}
-          >
-            <Breadcrumbs navigation={navigation} title titleBottom card={false} divider={false} />
-            <Outlet />
-            <Footer />
-          </Container>
-        )}
-        {!container && (
-          <Box sx={{ position: 'relative', minHeight: 'calc(100vh - 110px)', display: 'flex', flexDirection: 'column' }}>
-            <Breadcrumbs navigation={navigation} title titleBottom card={false} divider={false} />
-            <Outlet />
-            <Footer />
+  return (
+    <>
+      {isLoaded && (
+        <Box sx={{ display: 'flex', width: '100%' }}>
+          <Header open={open} handleDrawerToggle={handleDrawerToggle} />
+          <Drawer open={open} handleDrawerToggle={handleDrawerToggle} />
+          <Box component="main" sx={{ width: 'calc(100% - 260px)', flexGrow: 1, p: { xs: 2, sm: 3 } }}>
+            <Toolbar />
+            {container && (
+              <Container
+                maxWidth="lg"
+                sx={{
+                  px: { xs: 0, sm: 2 },
+                  position: 'relative',
+                  minHeight: 'calc(100vh - 110px)',
+                  display: 'flex',
+                  flexDirection: 'column'
+                }}
+              >
+                <Breadcrumbs navigation={navigation} title titleBottom card={false} divider={false} />
+                <Outlet />
+                <Footer />
+              </Container>
+            )}
+            {!container && (
+              <Box sx={{ position: 'relative', minHeight: 'calc(100vh - 110px)', display: 'flex', flexDirection: 'column' }}>
+                <Breadcrumbs navigation={navigation} title titleBottom card={false} divider={false} />
+                <Outlet />
+                <Footer />
+              </Box>
+            )}
           </Box>
-        )}
-      </Box>
-    </Box>
-  ) : null;
+        </Box>
+      )}
+    </>
+  );
 };
 
 export default MainLayout;
