@@ -334,9 +334,9 @@ const CustomersPage = () => {
       sortByField = sortBy.field;
     }
 
-    if (user.roleType === enums.RoleType.Broker) {
+    if (user?.roleType === enums.RoleType.Broker) {
       data = await customerService.getBrokerCustomers({ pageNumber, pageSize }, [{ field: sortByField, dir: sortBy.dir }]);
-    } else if (user.roleType === enums.RoleType.Admin) {
+    } else if (user?.roleType === enums.RoleType.Admin) {
       data = await customerService.getAllCustomers({ pageNumber, pageSize }, [{ field: sortByField, dir: sortBy.dir }]);
     }
 
@@ -536,7 +536,7 @@ const CustomersPage = () => {
         }
       ];
 
-      if (user.roleType === enums.RoleType.Admin) {
+      if (user?.roleType === enums.RoleType.Admin) {
         const brokerColumn = {
           Header: 'Broker',
           accessor: 'brokerCompanyName',
